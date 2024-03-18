@@ -20,6 +20,6 @@ const DogSchema: Schema = new Schema({
     vaccine: { type: Boolean, required: true },
     charity: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     photos: [{ type: String }]
-});
+}, { timestamps: true });
 
 export default mongoose.model<IDog>('Dog', DogSchema);

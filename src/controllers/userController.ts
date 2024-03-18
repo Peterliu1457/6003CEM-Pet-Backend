@@ -36,7 +36,7 @@ export const register = async (req: Request, res: Response) => {
         await user.save();
         const token = jwt.sign({ id: user._id }, JWT_SECRET);
 
-        res.status(201).send({ token });
+        res.status(201).send({ token, type });
     } catch (error: any) {
         res.status(500).send(error.message);
     }
@@ -51,7 +51,7 @@ export const login = async (req: Request, res: Response) => {
         }
 
         const token = jwt.sign({ id: user._id }, JWT_SECRET);
-        res.status(200).send({ token });
+        res.status(200).send({ token, type: user.type });
     } catch (error: any) {
         res.status(500).send(error.message);
     }

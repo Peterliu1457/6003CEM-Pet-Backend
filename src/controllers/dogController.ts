@@ -1,9 +1,11 @@
 import Dog from '../models/Dog';
 import { Request, Response } from 'express';
+import {mongo} from 'mongoose';
 
 export const createDog = async (req: Request, res: Response) => {
     try {
-        const dog = new Dog(req.body);
+        const user = req.user;
+        const dog = new Dog({ ...req.body, charity: new mongo.ObjectId(user!.id) });
         await dog.save();
         res.status(201).send(dog);
     } catch (error: any) {
@@ -42,3 +44,25 @@ export const updateDog = async (req: Request, res: Response) => {
         res.status(400).send(error.message);
     }
 };
+
+export const getCreatedDogs = async (req: Request, res: Response) => {
+    try {
+        const user = req.user!;
+        const dogs = await Dog.find({ charity: new mongo.ObjectId(user.id) });
+        res.status(200).send(dogs);
+    } catch (error: any) {
+        res.status(500).send(error.message);
+    }
+}
+
+export const getDogById = async (req: Request, res: Response) => {
+    try {
+        const dog = await Dog.findById(req.params.dogId);
+        if (!dog) {
+            return res.status(404).send('Dog not found');
+        }
+        res.status(200).send(dog);
+    } catch (error: any) {
+        res.status(500).send(error.message);
+    }
+}
